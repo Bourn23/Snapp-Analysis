@@ -1,10 +1,18 @@
-# ─── MODEL A ────────────────────────────────────────────────────────────────────
+"""
+In Progress:
+1. GRU  , left & right unit
+"""
+
+"""
+Must fix:
+1. whole_value (which is the array of the whole word embedding) so I can convert it to a matrix
+2. Change GRU's loading direction adapted to persian
+"""
 
 import tensorflow as tf
 import pandas as pd
+import numpy as np
 
-
-#ASPECT RECOGNITION
 # ─── 0 INPUT PRE-PROCESSING ─────────────────────────────────────────────────────────
 """word embedding algorithm"""
 #i will be using twitter hashtags
@@ -32,41 +40,59 @@ for row in data.row:
 
 
 
-# ─── PRE-PROCESSING BOOK IMPLEMENTATION ──────────────────────────────────────────────────────────────────────────
-
-
-
-
-
-
-
-# ─── 1 TAKE INPUT ───────────────────────────────────────────────────────────────
+whole_value = np.ndarray() #arr of the whole word embedding vocab
+# 1 TAKE INPUT ───────────────────────────────────────────────────────────────
 
 # how to shape the input???
 # well input is a R (d* V)
-d = 128 #dimension of vector
-vocab = 20000 #number of vocabulary words
-
-
-
+d_size = 100 #dimension of word embedding's vector
+vocab_size = 286000 #number of words in vocabulary
 
 """
 0. How to cope with changes in sentence lenght? (how my model is going to take different input size????)
 1. What's None in the placeholder shape?
 2. how to initialize the word embedding vector?
 3. How to convert each word to its one-hot vector?"""
+
+L = tf.constant(tf.convert_to_tensor(whole_value, dtype=tf.float32), dtype=tf.float32, shape=(d_size, vocab_size), name="L")
 with tf.name_scope("placeholders"):
-    x = tf.placeholder(tf.float32, (d, vocab))
-    y = tf.placeholder(tf.float32, (None, ))
+    x = tf.placeholder(tf.float32, (d_size, vocab_size)) #what's the shape of the input??
+    y = tf.placeholder(tf.float32, ([], )) #shape of y input is a scalar
+
+
+
+# 2 CAM Memory Module ──────────────────────────────────────────────────────────
+"""
+0. Let's embed one-hot in input?
+1. Which is faster to obtain an element from the Vocabulary matrix?
+    1. do V * One-Hot 
+    2. Retrieve from V
+    ** For now we go with the 1st solution"""
+
+# ── GRU UNIT ──
+
+def gru(left_input, right_input):
+    with tf.variable_scope("gru_left"):
+        r_t = tf.nn.sigmoid()
+
+
+def cam(input,  aspect_loc):
+    #aspect_loc = [start_loc, end_loc]
+    #input the one-hot vector for the 1st sentence
+    """Cabasc block"""
+    with tf.variable_scope("input"):
+        #taking apart the input into 2 sequences and get their e's
+        e = [tf.matmul(L * i) for i in input] 
+        #one_hot for left
+        e_ls = e[:aspect_loc[-1]] #till the last aspect
+
+        #one_hot for right
+        e_rs = e[aspect_loc[0]:] #from first aspect
 
 
 
 
 
-
-
-
-# ─── 2 FORM THE MEMORY ──────────────────────────────────────────────────────────
 
 #__VARIABLE__
 M = [] #the memory matrix
