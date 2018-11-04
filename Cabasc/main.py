@@ -73,7 +73,7 @@ with tf.name_scope("placeholders"):
 
 def gru(left_input, right_input):
     with tf.variable_scope("gru_left"):
-        r_t = tf.nn.sigmoid()
+        # r_t = tf.nn.sigmoid(tf.math.add(tf.matmul(), tf.matmul()))
 
 
 def cam(input,  aspect_loc):
