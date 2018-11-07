@@ -1,3 +1,8 @@
+"""
+ToDo:
+1. add get_output/outputs functionality regarding the paper requirements
+"""
+
 import tensorflow as tf
 class GRU_Cell(object):
     __init__(self, input_nodes, hidden_nodes, output_nodes):
@@ -48,3 +53,18 @@ class GRU_Cell(object):
             h_ = tf.tanh(tf.add(tf.matmul(self.W_h, x), tf.matmul(self.U_h, tf.matmul(r, previous_hidden_state))))
 
             current_hidden_state = tf.add(tf.multiply((1-z), h_), tf.multiply(z, previous_hidden_state))
+            return current_hidden_state
+
+        #Function for getting all hidden states
+        def get_states(self):
+            #Iterates through time/sequence to get hidden states
+            all_hidden_states = tf.scan (self.gru,
+                                        self.processed_input,
+                                        initializer=self.initial_hidden,
+                                        name="states")
+            return all_hidden_states
+
+        #Function to get output from a hidden layer
+        def get_output (self, hidden_states):
+            #Takes hidden state as input and returns its output
+            
