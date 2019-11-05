@@ -1,9 +1,5 @@
-#  Snapp Sentiment Analysis
-1. Scraped hashtags from twitter
+##  Snapp Scraper
+The aim is to scrape different hashtags in the twitter comments.
+Some preprocessing for modeling was also performed.
 
-# TODO
-1. try to redefine hazm POSTagger to label Nouns as Aspect
-
-# What's Next
-* Automatic labeling
-
+**NOTE**: You will need chromedrive to run the scraper script.
